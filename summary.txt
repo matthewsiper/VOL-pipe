@@ -1,0 +1,66 @@
+Summary - below is a brief description of what VOL-pipe is and the components that collectively make up VOL-pipe.
+
+VOL-pipe is a framework for building, persisting, and visualizing volatility surfaces for equity derivatives. Below is a layout of the directories and files in the project. In the Responsibilities section, you will find a description of each file outlined in the Project Directory Structure.
+
+
+Project Directory Structure
+---------------------------
+
+P1
+	adapters
+		mongo_adapter.py
+	bin
+		surface_mongo_handler.py
+		surface_processor.py
+		surface_worker_mq.py
+	config
+		config.py
+	handlers
+		surface_worker.py
+	utils
+		helpers.py
+	app.py
+	constants.py
+
+
+Responsibilities
+----------------
+
+mongo_adapter.py
+----------------
+Contains a MongoAdapter object that connects to a mongoDB instance. The database connection parameters (host and port) are read in from config/config.py. The MongoAdapter object contains the following CRUD methods: get_db, get_collection, insert_doc, bulk_insert_docs, get_docs_by_match, get_doc_by_id, convert_docid_to_str, count_docs_in_collection, get_docs_in_range, delete_doc_in_collection, delete_docs_in_collection. The MongoAdapter is used in app.py to fetch surface data for rendering via market-replay mode. The MongoAdapter object is also used in the script file /bin/surface_mongo_handler.py as part of the ETL pipeline process where it reads from queue and persists surface into MongoDB instance.
+
+surface_mongo_handler.py
+------------------------
+Instantiates a MongoAdapter object and binds it to a read queue. This script is run as part of the setup for the distributed multi-queue (DMQ) environment.
+
+surface_processor.py
+--------------------
+This file sets up the connection, channels, and queues for the distributed ETL pipeline. It can be run as a script with different params. The --env flag declares in which environment the script will run (options are DMQ, UQ, or Synchronized modes). Also, if the script is run with the --profile-env flag then timing measurements for the processing tasks will be printed as output in the corresponding surface worker and mongo adapter terminals. This script is used to start the distribute pipeline (after all other setup tasks have been complete- see steps_for_running_pipeline.txt for more information).
+
+
+surface_worker_mq.py
+--------------------
+Instantiates a SurfaceWorker object from handlers/surface_worker.py and binds it to a read queue and write queue. This script is run as part of the setup for the distributed multi-queue (DMQ) environment.
+
+config.py
+---------
+This file contains configuration parameters for the MongoDB configuration (used in mongo_adapter.py), and the td ameritrade api login credentials used by the SurfaceWorker (handlers/surface_worker.py) object to retrieve options data.
+
+surface_worker.py
+-----------------
+This contains the SurfaceWorker object. The surface worker serves the function of querying the TD Ameritrade API for options data and processes the data into a surface object (a dictionary). The SurfaceWorker is used as part of the ETL Pipeline and is instantiated by the bin/surface_worker_mq.py script.
+
+helpers.py
+----------
+Contains the get_data_for_graph function. This function is used as part of the UI functionality to transform a surface data object (records in the MongoDB instances) into a structure for rendering the surface graphically via the plotly library.
+
+
+app.py
+------
+This file contains the UI logic. It instantiates a MongoHandler object for market-replay mode and SurfaceWorker object for live-mode in which a call to SurfaceWorker.get_opt_data() retrieves live option data from the TD Ameritrade API. The UI is written leveraging the Dash library.
+
+
+constants.py
+------------
+This file contains various list of tickers and names of queues that are used by the surface_processor.py to both setup the pipeline, and write operations to the surface worker queues.

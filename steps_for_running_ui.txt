@@ -1,0 +1,18 @@
+The following instructions in "Running the UI" assumes that you have done the following:
+----------------------------------------------------------------------------------------
+	1. Have installed MongoDB and have a running instance locally at localhost on port 27017. If your instance is running on a different address please go into P1/config/config.py and set "host" and "port" values in the CONFIG_PARAMS["mongodb_params"] to match the address of your instance.
+	2. Have installed rabbit-mq.
+	3. Have installed all of the python library dependencies. To do so, please open a terminal and cd into P1. Run the following command:
+		pip3 install -r requirements.txt
+	4. Have successfully completed the "Running the Distributed ETL Pipeline" in steps_for_running_pipeline.txt
+
+
+Running the UI
+--------------
+    1. Open a terminal and cd into P1 (i.e. you are at the root project directory).
+    2. Run the UI service to expose the endpoint. Run the following command:
+        python3 app.py
+    3. Open a browser and navigate to:
+        http://127.0.0.1:8050/
+
+

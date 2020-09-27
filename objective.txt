@@ -1,0 +1,5 @@
+Objective
+---------
+The objective of VOL-pipe is to create a framework (UI and Backend) for visualizing volatility surfaces in both real-time and in market-replay mode.
+The goal was to create the etl process via a distributed pipeline environment utilizing asynchronous queues and the message-passing interface RabbitMQ.
+Lastly, the final goal, from a research prospective, was to measure the performance gained via a distributed environment relative to synchronized environments.

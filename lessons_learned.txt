@@ -1,0 +1,6 @@
+I learned several important big data lessons during P1. First, I learned how to create a pipeline framework consisting of distributed asynchronous queues.
+I became much more familiar with RabbitMQ and MongoDB. I also learned that while in general more distribution of work across processes and queues leads to faster processing times,
+it is still important to understand and identify the cost-benefits of increasing resources in a distributed environment (i.e. increasing the number of distributed workers and queues)
+to confirm that design and programming decisions in fact lead to more efficient algorithms and processing times. This was evident in the fact that creating 2 distributed queues (1 SurfaceWorker queue and 1 MongoHandler queue)
+was in fact slower than running the ETL process in a completely synchronized and continous block of code. However, both of these environments were much slower
+than compared to having 6 distributed queues (3 SurfaceWorker queues and 3 MongoHandler queues).
